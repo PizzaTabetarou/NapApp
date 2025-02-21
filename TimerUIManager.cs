@@ -19,7 +19,8 @@ public class TimerUIManager : MonoBehaviour
     private int totalMinutes = 0;       //時間(分に直す)
     private bool isRunning = false;     //カウントしているかどうかの真偽値
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    //UnityC#の関数
+    //アプリ開始時に1度だけ実行される
     void Start()
     {
         Screen.sleepTimeout = SleepTimeout.NeverSleep;  //android端末が、スリープモードに入らないようにするためのものらしい
@@ -40,6 +41,8 @@ public class TimerUIManager : MonoBehaviour
         timerCTRL.OnTimerFinished += PlayAlarm;
     }
 
+    //UnityC#の関数
+    //毎フレーム実行される
     void Update()
     {
         //残り時間を分と秒で表示
@@ -50,12 +53,14 @@ public class TimerUIManager : MonoBehaviour
         //文字列補間により、可読性アップ
         countdownText.text = $"{minutes:D2}分{seconds:D2}秒";
         
+        //timeが0になった時、isRunningをfalseに
         if(time is 0)
         {
             isRunning = false;
         }
     }
 
+    //setButtonをクリックした時の関数
     void SetTimer()
     {
         //入力された文字列を整数に変換し、int ○○に代入
@@ -70,6 +75,7 @@ public class TimerUIManager : MonoBehaviour
                 timerCTRL.ResetTimer(totalMinutes * 60);
             }
 
+            //タイマーセット後、inputGroupを非アクティブ化、countdownGroupをアクティブ化する
             inputGroup.SetActive(false);
             countdownGroup.SetActive(true);
 
@@ -77,6 +83,7 @@ public class TimerUIManager : MonoBehaviour
         }
     }
 
+    //startButtonをクリックした時の関数
     private void OnStartButtonPressed()
     {
         timerCTRL.StartTimer();
@@ -84,8 +91,11 @@ public class TimerUIManager : MonoBehaviour
         isRunning = true;
     }
 
+    //stopButtonをクリックした時の関数
     private void OnStopButtonPressed()
     {
+        //isRunningがtrueの場合(タイマー実行中にstopButtonを一度押した場合)rawImageを非アクティブ化、タイマーを止める、isRunningをfalseにする
+        //isRunningがfalseの場合アラームを止める(アラーム鳴動中のみ)、タイマーをリセット、inputGroupをアクティブ化、countdownGroupとrawImageを非アクティブ化する
         if(isRunning)
         {
             rawImage.SetActive(false);
@@ -102,6 +112,8 @@ public class TimerUIManager : MonoBehaviour
         }
     }
 
+    //アラームを鳴らすための関数
+    //timerCTRLスクリプトがOnTimerFinishedイベント発生時に実行される
     private void PlayAlarm()
     {
         musicPlayer.PlayAlarm();
